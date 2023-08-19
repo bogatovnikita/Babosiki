@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Babosiki</string>
+    <string name="popular">Popular</string>
+    <string name="favourites">Favorites</string>
 </resources>
