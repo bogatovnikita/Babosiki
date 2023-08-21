@@ -1,9 +1,12 @@
 package com.bogatovnikita.babosiki.di
 
+import android.content.Context
 import com.bogatovnikita.babosiki.data.retrofit.ApiService
+import com.bogatovnikita.babosiki.utils.ApiKeyManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -18,11 +21,11 @@ object ApiModule {
 
     @Provides
     @Singleton
-    fun provideApiKeyInterceptor(): Interceptor {
+    fun provideApiKeyInterceptor(apiKeyManager: ApiKeyManager): Interceptor {
         return Interceptor { chain ->
             val originalRequest = chain.request()
             val newRequest = originalRequest.newBuilder()
-                .header("apikey", "woINFSlu0qUqqw3B4MVOJdxqEhuE77WX")
+                .header("apikey", apiKeyManager.getApiKey() ?: "")
                 .build()
             chain.proceed(newRequest)
         }
@@ -50,5 +53,11 @@ object ApiModule {
     @Singleton
     fun provideApiService(retrofit: Retrofit): ApiService {
         return retrofit.create(ApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideApiKeyManager(@ApplicationContext context: Context): ApiKeyManager {
+        return ApiKeyManager(context)
     }
 }
