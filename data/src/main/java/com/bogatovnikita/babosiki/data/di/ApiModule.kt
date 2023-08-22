@@ -1,8 +1,8 @@
-package com.bogatovnikita.babosiki.di
+package com.bogatovnikita.babosiki.data.di
 
 import android.content.Context
 import com.bogatovnikita.babosiki.data.retrofit.ApiService
-import com.bogatovnikita.babosiki.utils.ApiKeyManager
+import com.bogatovnikita.babosiki.data.utils.ApiKeyManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,7 +16,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object ApiModule {
+internal object ApiModule {
     private const val BASE_URL = "https://api.apilayer.com/"
 
     @Provides
