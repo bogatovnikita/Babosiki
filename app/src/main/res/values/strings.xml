@@ -2,9 +2,11 @@
     <string name="app_name">Babosiki</string>
     <string name="popular">Popular</string>
     <string name="favourites">Favorites</string>
-    <string name="usd">USD</string>
+    <string name="hint">Currency</string>
     <string name="request">Request</string>
     <string name="update">Update</string>
     <string name="please_wait">Please wait…</string>
     <string name="an_error_has_occurred_please_try_again">An error has occurred, please try again</string>
+    <string name="enter_the_currency_you_need">Enter the currency you need</string>
+    <string name="the_field_should_not_be_empty">The field should not be empty</string>
 </resources>

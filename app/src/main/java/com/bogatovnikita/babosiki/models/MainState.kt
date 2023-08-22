@@ -1,9 +1,9 @@
 package com.bogatovnikita.babosiki.models
 
 data class MainState(
-    val lastUpdate: String = "",
     val nameCurrency: String = "",
-    val loading: Boolean = false,
+    val loading: Boolean = true,
     val error: Boolean = false,
-    val currencyList: List<CurrencyItem> = mutableListOf()
+    val currencyList: List<CurrencyItem> = mutableListOf(),
+    val currentCurrency: String = ""
 )

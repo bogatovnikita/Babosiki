@@ -2,61 +2,69 @@ package com.bogatovnikita.babosiki.view_model
 
 import androidx.lifecycle.viewModelScope
 import com.bogatovnikita.babosiki.domain.result.Result
-import com.bogatovnikita.babosiki.domain.usecase.PopularUseCase
+import com.bogatovnikita.babosiki.domain.usecase.GetExchangeRateUseCaseImplementation
 import com.bogatovnikita.babosiki.models.CurrencyItem
 import com.bogatovnikita.babosiki.models.MainState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val popularUseCase: PopularUseCase
+    private val getExchangeRateUseCaseImplementation: GetExchangeRateUseCaseImplementation
 ) : BaseViewModel<MainState>(MainState()) {
 
-    fun requestData(nameCurrency: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            updateState {
-                it.copy(
-                    loading = !_screenState.value.loading
-                )
-            }
-            popularUseCase.invoke(nameCurrency).collect { result ->
+    init {
+        updateCurrency()
+    }
+
+    fun requestNewCurrency(value: String) {
+        handleCurrencyRequest(value, true)
+    }
+
+    fun updateCurrency() {
+        handleCurrencyRequest(_screenState.value.currentCurrency, false)
+    }
+
+    private fun handleCurrencyRequest(value: String, forceUpdate: Boolean) {
+        startLoading()
+        viewModelScope.launch {
+            getExchangeRateUseCaseImplementation.invoke(forceUpdate, value).collect { result ->
                 when (result) {
-                    is Result.Loading -> {
-                        updateState { state ->
-                            state.copy(loading = !_screenState.value.loading)
-                        }
-                    }
-
-                    is Result.Success -> {
-                        updateState { state ->
-                            state.copy(
-                                loading = false,
-                                error = false,
-                                lastUpdate = result.data.date,
-                                nameCurrency = result.data.baseCurrency,
-                                currencyList = matToList(result.data.rates)
-                            )
-                        }
-                    }
-
-                    is Result.Error -> {
-                        updateState { state ->
-                            state.copy(error = !_screenState.value.error)
-                        }
-                    }
+                    is Result.Success -> handleSuccessResult(result.data.rates)
+                    is Result.Error -> handleErrorResult()
                 }
             }
         }
     }
 
-    private fun matToList(map: Map<String, Double>): List<CurrencyItem> {
+    private fun handleSuccessResult(rates: Map<String, Double>) {
+        updateState {
+            it.copy(
+                currencyList = mapToList(rates),
+                loading = false
+            )
+        }
+    }
+
+    private fun handleErrorResult() {
+        updateState { it.copy(error = true) }
+    }
+
+    private fun mapToList(map: Map<String, Double>): List<CurrencyItem> {
         return map.map { (key, value) ->
             CurrencyItem(
                 key = key,
                 value = value
+            )
+        }
+    }
+
+    private fun startLoading() {
+        updateState {
+            it.copy(
+                loading = true,
+                error = false
             )
         }
     }
