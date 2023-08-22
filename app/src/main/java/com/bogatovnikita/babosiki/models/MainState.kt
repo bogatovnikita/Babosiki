@@ -5,5 +5,4 @@ data class MainState(
     val loading: Boolean = true,
     val error: Boolean = false,
     val currencyList: List<CurrencyItem> = mutableListOf(),
-    val currentCurrency: String = ""
 )
