@@ -1,7 +1,8 @@
 package com.bogatovnikita.babosiki.domain.result
 
-sealed class Result<out T> {
-    data class Success<out T>(val data: T) : Result<T>()
-    data class Error(val message: String) : Result<Nothing>()
-    object Loading : Result<Nothing>()
+import com.bogatovnikita.babosiki.domain.models.ExchangeRate
+
+sealed class Result {
+    data class Success(val data: ExchangeRate) : Result()
+    data class Error(val message: Throwable) : Result()
 }
