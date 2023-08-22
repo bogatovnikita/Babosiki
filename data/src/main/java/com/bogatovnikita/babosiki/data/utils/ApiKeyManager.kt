@@ -1,4 +1,4 @@
-package com.bogatovnikita.babosiki.utils
+package com.bogatovnikita.babosiki.data.utils
 
 import android.content.Context
 import androidx.security.crypto.EncryptedSharedPreferences
