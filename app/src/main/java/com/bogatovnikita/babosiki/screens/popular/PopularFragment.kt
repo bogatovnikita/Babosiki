@@ -42,7 +42,7 @@ class PopularFragment : Fragment(R.layout.fragment_popular) {
 
     private fun renderState(state: MainState) {
         binding.loadingGroup.isVisible = state.loading
-        binding.recyclerView.isVisible = !state.loading && !state.error
+        binding.groupRecyclerView.isVisible = !state.loading && !state.error
         binding.error.isVisible = state.error
         binding.requestBtn.isClickable = !state.loading && !state.error
         binding.updateBtn.isClickable = !state.loading && !state.error
