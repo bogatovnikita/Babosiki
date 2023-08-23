@@ -2,6 +2,7 @@ package com.bogatovnikita.babosiki.screens.popular
 
 import android.os.Bundle
 import android.view.View
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -16,6 +17,7 @@ import com.bogatovnikita.babosiki.adapters.PopularCurrencyAdapter
 import com.bogatovnikita.babosiki.databinding.FragmentPopularBinding
 import com.bogatovnikita.babosiki.models.CurrencyItem
 import com.bogatovnikita.babosiki.models.MainState
+import com.bogatovnikita.babosiki.sort.SortCriteria
 import com.bogatovnikita.babosiki.view_model.MainViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -60,6 +62,16 @@ class PopularFragment : Fragment(R.layout.fragment_popular) {
     }
 
     private fun initClickListener() {
+        clickOnRequestBtn()
+        binding.updateBtn.setOnClickListener {
+            viewModel.updateCurrency()
+        }
+        binding.sortBtn.setOnClickListener {
+            showSortMenu(it)
+        }
+    }
+
+    private fun clickOnRequestBtn() {
         binding.requestBtn.setOnClickListener {
             val value = binding.inputText.text.toString()
 
@@ -82,10 +94,37 @@ class PopularFragment : Fragment(R.layout.fragment_popular) {
                 ).show()
             }
         }
-
-        binding.updateBtn.setOnClickListener {
-            viewModel.updateCurrency()
-        }
     }
 
+    private fun showSortMenu(view: View) {
+        val popupMenu = PopupMenu(requireContext(), view)
+        popupMenu.inflate(R.menu.sort_menu)
+
+        popupMenu.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.ascending_by_name -> {
+                    viewModel.sortList(SortCriteria.ASCENDING_BY_NAME)
+                    true
+                }
+
+                R.id.descending_by_name -> {
+                    viewModel.sortList(SortCriteria.DESCENDING_BY_NAME)
+                    true
+                }
+
+                R.id.ascending_by_value -> {
+                    viewModel.sortList(SortCriteria.ASCENDING_BY_VALUE)
+                    true
+                }
+
+                R.id.descending_by_value -> {
+                    viewModel.sortList(SortCriteria.DESCENDING_BY_VALUE)
+                    true
+                }
+
+                else -> false
+            }
+        }
+        popupMenu.show()
+    }
 }
